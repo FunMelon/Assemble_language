@@ -2,6 +2,7 @@
 ;@2022/3/24
 ;数字计时器
 data        segment
+    CLEARSCREEN db 23 dup(0ah), '$'
     TIME    db  '00:00', 0ah, '$'
     INFOR   db  'Pless any key to start(except the blank)',0ah, '$'
 data        ends
@@ -28,6 +29,8 @@ s:;开始循环，不断的读取打印，直到输入空格停止
 
             call    STOCKINASCII
             push    dx
+            lea     dx, CLEARSCREEN
+            call    PRINT
             lea     dx, TIME
             call    PRINT
             pop     dx
