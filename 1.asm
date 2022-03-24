@@ -6,14 +6,14 @@ data    segment
     FAIL            db  "No match.",'$'
     SUCCESS         db  "Match at the location: ",'$'
     SUCCESS2        db  " H of the sentence.",'$'
-    CRLF            db  0ah,'$';´æ´¢ÌáÊ¾ĞÅÏ¢
+    CRLF            db  0ah,'$';å­˜å‚¨æç¤ºä¿¡æ¯
 
     KEYBUF          db  40
                     db  ?
-                    db  40  dup(0);key»º³åÇø
+                    db  40  dup(0);keyç¼“å†²åŒº
     SENTENCEBUF     db  40
                     db  ?
-                    db  40  dup(0);sentence»º³åÇø
+                    db  40  dup(0);sentenceç¼“å†²åŒº
 data    ends
 
 code    segment
@@ -31,7 +31,7 @@ sb:     call    readSentence
         mov ax,4c00h
         int 21h
 
-readKey:;¶ÁÈ¡key
+readKey:;è¯»å–key
         lea dx,INKEY        
         mov ah,09h          
         int 21h
@@ -40,7 +40,7 @@ readKey:;¶ÁÈ¡key
         int 21h
         ret
 
-readSentence:;¶ÁÈ¡sentence
+readSentence:;è¯»å–sentence
         lea dx,INSENSTENCE      
         mov ah,09h          
         int 21h
@@ -49,19 +49,19 @@ readSentence:;¶ÁÈ¡sentence
         int 21h
         ret
 
-CMPKS:;½«keyºÍsentence½øĞĞ±È½Ï
+CMPKS:;å°†keyå’Œsentenceè¿›è¡Œæ¯”è¾ƒ
         mov bx,offset KEYBUF+2
         mov si,offset SENTENCEBUF+2
         mov ax,offset SENTENCEBUF+1;[si-1]
-        sub al,offset KEYBUF+1;[bx-1];»ñÈ¡³¤¶ÈÖ®²î
+        sub al,offset KEYBUF+1;[bx-1];è·å–é•¿åº¦ä¹‹å·®
         jb  cmpFail
         mov cx,ax
 
 s:      mov al,[bx]
-        cmp al,[si]                 ;±È½Ï×Ö·û´®ÊÇ·ñÏàµÈ
+        cmp al,[si]                 ;æ¯”è¾ƒå­—ç¬¦ä¸²æ˜¯å¦ç›¸ç­‰
         jne noEqual
 Equal:  
-        inc bx                      ;ÏàµÈ,ÅĞ¶ÏÊÇ·ñ±È½ÏÍê³É
+        inc bx                      ;ç›¸ç­‰,åˆ¤æ–­æ˜¯å¦æ¯”è¾ƒå®Œæˆ
         inc si
         mov ax,bx
         sub ax,offset KEYBUF+2
@@ -75,7 +75,7 @@ noEnd:  loop s
 
 noEqual:
         mov ax,bx
-        mov bx,offset KEYBUF+2      ;²»ÏàµÈ
+        mov bx,offset KEYBUF+2      ;ä¸ç›¸ç­‰
         sub ax,bx
         sub si,ax
         inc si
@@ -83,23 +83,23 @@ noEqual:
         loop s
         jmp cmpFail
 
-cmpFail:;±È½ÏÊ§°Ü
+cmpFail:;æ¯”è¾ƒå¤±è´¥
         call PRINTFAIL
         ret
 
-PRINTCRLF:;´òÓ¡»»ĞĞ
+PRINTCRLF:;æ‰“å°æ¢è¡Œ
         lea dx,CRLF
         mov ah,09h
         int 21h
         ret
 
-PRINTFAIL:;±È½Ï³ö´í£¬´òÓ¡Ê§°ÜÌáÊ¾
+PRINTFAIL:;æ¯”è¾ƒå‡ºé”™ï¼Œæ‰“å°å¤±è´¥æç¤º
         lea dx,FAIL
         mov ah,09h
         int 21h
         ret
 
-PRINTSUCCESS:;±È½Ï³É¹¦£¬´òÓ¡³É¹¦ĞÅÏ¢
+PRINTSUCCESS:;æ¯”è¾ƒæˆåŠŸï¼Œæ‰“å°æˆåŠŸä¿¡æ¯
         lea dx,SUCCESS
         mov ah,09h
         int 21h
@@ -107,16 +107,16 @@ PRINTSUCCESS:;±È½Ï³É¹¦£¬´òÓ¡³É¹¦ĞÅÏ¢
         mov ax,si
         sub ax,offset SENTENCEBUF+2
         sub al,KEYBUF+1
-        add ax,1;alÀïÃæ´æ´¢×ÅÆ¥ÅäÎ»ÖÃ
+        add ax,1;alé‡Œé¢å­˜å‚¨ç€åŒ¹é…ä½ç½®
 
         mov bx,16
         mov cx,0
         mov dx,0
 noZero: div bx
-        push dx;dx´æÓà
+        push dx;dxå­˜ä½™
         inc cx
         cwd
-        cmp ax,0;ax´æÉÌ
+        cmp ax,0;axå­˜å•†
         jne noZero
 noEmpty:pop dx
         cmp dl,9

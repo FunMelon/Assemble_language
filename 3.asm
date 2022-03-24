@@ -7,26 +7,26 @@ data    segment
     SEARCH  db  "name?: ",'$'
     NOTFIND db  "Not found",0ah,'$'
     STORPEO db  "How many people it is: ",'$'
-    CRLF    db  0ah,'$';ËùÓĞµÄÊä³öĞÅÏ¢ÏÔÊ¾
+    CRLF    db  0ah,'$';æ‰€æœ‰çš„è¾“å‡ºä¿¡æ¯æ˜¾ç¤º
 
     bufferName      label  byte
     maxLenName      db     21
     actLenName      db     ?
-    bufferNameData  db     21 dup(0);nameµÄ»º´æÇø
+    bufferNameData  db     21 dup(0);nameçš„ç¼“å­˜åŒº
 
     bufferNum       label  word
     maxLenNum       db     9
     actLenNum       db     ?
-    bufferNumData   db     9 dup(0);numµÄ»º´æÇø
+    bufferNumData   db     9 dup(0);numçš„ç¼“å­˜åŒº
 
-    numtable  db     50 dup(28 dup(0));numµÄ´æ´¢Óò
-    nameCount dw     0                ;µ±Ç°ÊäÈëÁË¼¸¸öÈË
-    endaddr   dw     ?                ;Î²µØÖ·
-    tempend   dw     ?                ;Ôİ´æÎ²µØÖ·
-    ;swapped   dw     ?                ;ÅĞ¶ÏÊÇ·ñ½øĞĞ½»»»µÄ²¼¶û±äÁ¿
-    peopleNum dw     ?                ;×ÜÈËÊı
-    savenp    db     28 dup(0),0dh,0ah,'$';Ôİ´æÆ÷
-    searchaddr dw    ?                ;ËÑÑ°µØÖ·
+    numtable  db     50 dup(28 dup(0));numçš„å­˜å‚¨åŸŸ
+    nameCount dw     0                ;å½“å‰è¾“å…¥äº†å‡ ä¸ªäºº
+    endaddr   dw     ?                ;å°¾åœ°å€
+    tempend   dw     ?                ;æš‚å­˜å°¾åœ°å€
+    ;swapped   dw     ?                ;åˆ¤æ–­æ˜¯å¦è¿›è¡Œäº¤æ¢çš„å¸ƒå°”å˜é‡
+    peopleNum dw     ?                ;æ€»äººæ•°
+    savenp    db     28 dup(0),0dh,0ah,'$';æš‚å­˜å™¨
+    searchaddr dw    ?                ;æœå¯»åœ°å€
     ;flag      db     ?
     ;flagb     db     ?
     show      db     'name                phone',0dh,0ah,'$'
@@ -36,11 +36,11 @@ assume  cs:code,ds:data,es:data
 start:
         mov ax,data
         mov ds,ax
-        mov es,ax           ;×°ÔØds,es
-        lea di,numtable     ;´æ´¢Êı¾İµÄÎ»ÖÃ
+        mov es,ax           ;è£…è½½ds,es
+        lea di,numtable     ;å­˜å‚¨æ•°æ®çš„ä½ç½®
         lea dx,STORPEO
         mov ah,09h
-        int 21h             ;Ñ¯ÎÊ¼¸¸öÈË
+        int 21h             ;è¯¢é—®å‡ ä¸ªäºº
         mov bx,0
 conTreadPeo:;newchar
         mov ah,1
@@ -57,7 +57,7 @@ conTreadPeo:;newchar
         add bx,ax
         jmp conTreadPeo
 stockPeoNum:;next 
-        mov peopleNum,bx     ;´Ó¼üÅÌ½ÓÊÜpeopleNum
+        mov peopleNum,bx     ;ä»é”®ç›˜æ¥å—peopleNum
         call PRINTCRLF
 conInput:;a10
         call PRINTINNAME
@@ -71,7 +71,7 @@ conInput:;a10
         je exit
         mov bx,peopleNum
         cmp nameCount,bx
-        jne conInput        ;¸ù¾İpeopleNumÒÀ´Î¶ÁÈ¡ĞÅÏ¢
+        jne conInput        ;æ ¹æ®peopleNumä¾æ¬¡è¯»å–ä¿¡æ¯
         call nameSort
 controlModel:;a20    
         call PRINTISCON
@@ -85,17 +85,17 @@ controlModel:;a20
         jz  exit
         cmp al,'N'
         jz  exit
-        jmp controlModel    ;ÔÚ¿ØÖÆ½çÃæ×ªÓÆ
+        jmp controlModel    ;åœ¨æ§åˆ¶ç•Œé¢è½¬æ‚ 
 searchName:;a30
         call PRINTCRLF
         call PRINTSEARCH
-        call inputName      ;¶ÁÈ¡´ıËÑË÷µÄĞÕÃû
+        call inputName      ;è¯»å–å¾…æœç´¢çš„å§“å
 searchModel:;a40
         call nameSearch
-        jmp controlModel    ;½øĞĞ²éÕÒ
+        jmp controlModel    ;è¿›è¡ŒæŸ¥æ‰¾
 exit:   
         call PRINTALL
-        mov ax,4c00h        ;ÖÕÖ¹³ÌĞò
+        mov ax,4c00h        ;ç»ˆæ­¢ç¨‹åº
         int 21h
 
 PRINT:
@@ -129,7 +129,7 @@ PRINTNOTFIND:
         lea dx,NOTFIND
         call PRINT
         ret
-inputName:                  ;¶ÁÈ¡ĞÕÃû£¬²¢Ôİ´æÔÚ»º³åÇø
+inputName:                  ;è¯»å–å§“åï¼Œå¹¶æš‚å­˜åœ¨ç¼“å†²åŒº
         mov ah,0ah
         lea dx,bufferName
         int 21h
@@ -138,13 +138,13 @@ inputName:                  ;¶ÁÈ¡ĞÕÃû£¬²¢Ôİ´æÔÚ»º³åÇø
         mov bl,actLenName
         mov cx,21
         sub cx,bx
-noEndofName:;b10           ;"ĞŞ²¹"Ãû×Ö
+noEndofName:;b10           ;"ä¿®è¡¥"åå­—
         mov bufferNameData[bx],' '
         inc bx
         loop noEndofName
         ret
 
-inputPhoneNum:             ;¶ÁÈ¡ºÅÂë£¬²¢Ôİ´æÔÚ»º³åÇø
+inputPhoneNum:             ;è¯»å–å·ç ï¼Œå¹¶æš‚å­˜åœ¨ç¼“å†²åŒº
         mov ah,0ah
         lea dx,bufferNum
         int 21h
@@ -153,69 +153,69 @@ inputPhoneNum:             ;¶ÁÈ¡ºÅÂë£¬²¢Ôİ´æÔÚ»º³åÇø
         mov bl,actLenNum
         mov cx,9
         sub cx,bx
-noEndofNum:;c10            ;"ĞŞ²¹"ºÅÂë
+noEndofNum:;c10            ;"ä¿®è¡¥"å·ç 
         mov bufferNumData[bx],' '
         inc bx
         loop noEndofNum
         ret
 
-stockName:                  ;´æ·ÅÃû×Ö
+stockName:                  ;å­˜æ”¾åå­—
         lea si,bufferNameData
         mov cx,20
         rep movsb
         ret
 
-stockPhoneNum:              ;´æ·ÅºÅÂë£¬¶şÕßÒ»¹²Õ¼28byte
+stockPhoneNum:              ;å­˜æ”¾å·ç ï¼ŒäºŒè€…ä¸€å…±å 28byte
         lea si,bufferNumData
         mov cx,8
         rep movsb
         ret
-nameSort:                   ;ÆğÅİÅÅĞò
+nameSort:                   ;èµ·æ³¡æ’åº
         sub di,28
-        mov endaddr,di;ÉèÖÃÖÕÖ¹µØÖ·,ÓÃÀ´»Ö¸´si
+        mov endaddr,di;è®¾ç½®ç»ˆæ­¢åœ°å€,ç”¨æ¥æ¢å¤si
         mov tempend,di
 c1:
         ;mov swapped,0
-        lea si,numtable;»Øµ½×î³õµÄÆğµã
+        lea si,numtable;å›åˆ°æœ€åˆçš„èµ·ç‚¹
 c2:     
         mov cx,20
         mov di,si
-        add di,28;ÓÃsiºÍdi£¨si+28£©·Ö±ğÖ¸ÏòÁÚ½ÓµÄÁ½¸öÃû×Ö
+        add di,28;ç”¨siå’Œdiï¼ˆsi+28ï¼‰åˆ†åˆ«æŒ‡å‘é‚»æ¥çš„ä¸¤ä¸ªåå­—
         mov ax,di
-        mov bx,si;Ôİ´ædiºÍsi
-        repz cmpsb;±È½ÏÌø³öµÄÌõ¼şZF=0»òÕßCX=0
-        jbe c3;ZF=1£¬Ğ¡ÓÚµÈÓÚÔò×ªÒÆ(´ËÊ±²»ĞèÒª½»»»)
+        mov bx,si;æš‚å­˜diå’Œsi
+        repz cmpsb;æ¯”è¾ƒè·³å‡ºçš„æ¡ä»¶ZF=0æˆ–è€…CX=0
+        jbe c3;ZF=1ï¼Œå°äºç­‰äºåˆ™è½¬ç§»(æ­¤æ—¶ä¸éœ€è¦äº¤æ¢)
         ;ja c3
 
-        mov si,bx;»Ö¸´si
-        lea di,savenp;ÓÃdiÀ´Ö¸ÏòÔİ´æÆ÷
+        mov si,bx;æ¢å¤si
+        lea di,savenp;ç”¨diæ¥æŒ‡å‘æš‚å­˜å™¨
         mov cx,28
-        rep movsb;£¨si£©×ªÒÆµ½Ôİ´æÆ÷
+        rep movsb;ï¼ˆsiï¼‰è½¬ç§»åˆ°æš‚å­˜å™¨
         mov cx,28
         mov di,bx;
-        rep movsb;ÓÃ(si+28)ĞŞ¸Ä(si)
+        rep movsb;ç”¨(si+28)ä¿®æ”¹(si)
         mov cx,28
         lea si,savenp
-        rep movsb;×ªÒÆ¼Ä´æÆ÷µ½£¨si+28£©
+        rep movsb;è½¬ç§»å¯„å­˜å™¨åˆ°ï¼ˆsi+28ï¼‰
         ;mov swapped,1
-c3:                     ;×Ö·û´®²»Í¬
-        mov si,ax;»Ö¸´si
+c3:                     ;å­—ç¬¦ä¸²ä¸åŒ
+        mov si,ax;æ¢å¤si
 
         ;add si,28;;;;
-        cmp si,tempend;ÅĞ¶ÏÊÇ·ñµÚÒ»ÂÖ½áÊø
-        jb  c2;Ã»ÓĞ½áÊøsi¼ÌĞøÓÒÒÆ
+        cmp si,tempend;åˆ¤æ–­æ˜¯å¦ç¬¬ä¸€è½®ç»“æŸ
+        jb  c2;æ²¡æœ‰ç»“æŸsiç»§ç»­å³ç§»
         mov bx,tempend
         sub bx,28
-        mov tempend,bx;ÒÑ¾­±Èµ½Ä©Î²¾ÍÄ©Î²¼õÒ»
+        mov tempend,bx;å·²ç»æ¯”åˆ°æœ«å°¾å°±æœ«å°¾å‡ä¸€
         lea ax,numtable
-        cmp bx,ax;ÔÚµÚÒ»ÂÖÒÑ¾­½áÊøµÄÇé¿öÏÂÅĞ¶ÏÊÇ·ñÈ«²¿½áÊø
-        je  finish;È«²¿½áÊøÁË
+        cmp bx,ax;åœ¨ç¬¬ä¸€è½®å·²ç»ç»“æŸçš„æƒ…å†µä¸‹åˆ¤æ–­æ˜¯å¦å…¨éƒ¨ç»“æŸ
+        je  finish;å…¨éƒ¨ç»“æŸäº†
         jmp c1
 
         ;cmp si,endaddr
         ;jb  c2
         ;cmp swapped,0
-        ;jne c1          ;ÒÑ¾­·¢ÉúÁË½»»»
+        ;jne c1          ;å·²ç»å‘ç”Ÿäº†äº¤æ¢
 finish: ret
 
 nameSearch:
@@ -225,23 +225,23 @@ searchProcess:
         mov cx,20
         lea si,bufferNameData
         mov di,bx
-        repz cmpsb;±È½Ï»º³åÇøºÍÄÚ´æÀïµÄÃû×Ö
-        je  found;ÕÒµ½ÁË£¡
-        add bx,28;Ã»ÕÒµ½,ÄÇ¾Í¼ÌĞø
-        cmp bx,endaddr;ÅĞ¶ÏÊÇ·ñ²éÍêÁË
-        jbe searchProcess;Ã»²éÍê£¬ÄÇ¾Í¼ÌĞø
+        repz cmpsb;æ¯”è¾ƒç¼“å†²åŒºå’Œå†…å­˜é‡Œçš„åå­—
+        je  found;æ‰¾åˆ°äº†ï¼
+        add bx,28;æ²¡æ‰¾åˆ°,é‚£å°±ç»§ç»­
+        cmp bx,endaddr;åˆ¤æ–­æ˜¯å¦æŸ¥å®Œäº†
+        jbe searchProcess;æ²¡æŸ¥å®Œï¼Œé‚£å°±ç»§ç»­
         ;cmp flag,0
-        ;jz nof;²éÍêÁË¶øÇÒÃ»ÕÒµ½
+        ;jz nof;æŸ¥å®Œäº†è€Œä¸”æ²¡æ‰¾åˆ°
         ;jmp dexit
 nof:    
         call PRINTNOTFIND
         jmp dexit
 found:     
-        mov searchaddr,bx;ÕÒµ½µ±Ç°²éÕÒÎ»ÖÃ
+        mov searchaddr,bx;æ‰¾åˆ°å½“å‰æŸ¥æ‰¾ä½ç½®
         ;inc flag
         call printLine
         ;add bx,28
-        ;cmp bx,endaddr;ÅĞ¶ÏÊÇ·ñ²éÍêÁË
+        ;cmp bx,endaddr;åˆ¤æ–­æ˜¯å¦æŸ¥å®Œäº†
         ;jbe d
         ;jmp dexit
 
@@ -249,7 +249,7 @@ found:
 dexit:  
         ret
 printLine:
-        ;cmp flag,0;Ã»ÕÒµ½
+        ;cmp flag,0;æ²¡æ‰¾åˆ°
         ;jz no
 ;p10:    
         mov ah,09h
@@ -260,7 +260,7 @@ printLine:
         lea di,savenp
         rep movsb
         lea dx,savenp
-        mov ah,09h;ÔÚ»º´æÇøÏÔÊ¾½á¹û
+        mov ah,09h;åœ¨ç¼“å­˜åŒºæ˜¾ç¤ºç»“æœ
         int 21h
         jmp fexit
 ;no:     

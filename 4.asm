@@ -2,12 +2,12 @@
 ;@2022/3/24
 data segment
     INPUT   db  "Please input n(n must > 0 and < 100): ",'$'
-    OUTPUT  db  "F(n) = ",'$';ÌáÊ¾ĞÅÏ¢
-    num     dw  ?;´ı¼ì²éÊé
+    OUTPUT  db  "F(n) = ",'$';æç¤ºä¿¡æ¯
+    num     dw  ?;å¾…æ£€æŸ¥ä¹¦
     DATAA   db  21 dup(0),1
-    DATAB   db  21 dup(0),1;Î±²Ù×÷Óò
-    endaddr dw  ?;Ä©Î²µÄµØÖ·
-    TEMP    db  22 dup(0);ÁíÒ»¸öÎ±²Ù×÷Óò
+    DATAB   db  21 dup(0),1;ä¼ªæ“ä½œåŸŸ
+    endaddr dw  ?;æœ«å°¾çš„åœ°å€
+    TEMP    db  22 dup(0);å¦ä¸€ä¸ªä¼ªæ“ä½œåŸŸ
     CRLF    db  0ah,'$'
 data ends
 
@@ -35,19 +35,19 @@ constReadNum:
         add bx,ax
         jmp constReadNum
 stockNum:
-        mov cx,bx;¶ÁÈ¡Êı×Ö´æµ½cxÀïÃæ
+        mov cx,bx;è¯»å–æ•°å­—å­˜åˆ°cxé‡Œé¢
         dec cx 
         cmp cx,0
         jbe show
         cmp cx,99
-        ja exit;²»´¦ÀíĞ¡ÓÚ0´óÓÚ99µÄÇé¿ö
+        ja exit;ä¸å¤„ç†å°äº0å¤§äº99çš„æƒ…å†µ
 time:   call movOnce
         loop time       
 show:   call PRINTSULT
         call PRINTDATAA
 exit:   mov ax,4c00h
         int 21h
-movOnce: ;½øĞĞÒ»´ÎÒÆÎ»²Ù×÷
+movOnce: ;è¿›è¡Œä¸€æ¬¡ç§»ä½æ“ä½œ
         push cx
         lea si,DATAA
         lea di,TEMP
@@ -60,7 +60,7 @@ movOnce: ;½øĞĞÒ»´ÎÒÆÎ»²Ù×÷
         lea si,DATAB
         add si,21
         lea di,TEMP
-        add di,21   ;´ÓÄ©Î²¿ªÊ¼
+        add di,21   ;ä»æœ«å°¾å¼€å§‹
         mov cx,21
         mov ah,0
 noFinish:
@@ -88,7 +88,7 @@ isZero:
         inc si
         mov al,[si]
         cmp al,0
-        je isZero;´ÓµÚÒ»¸ö·Ç0Î»ÏÔÊ¾
+        je isZero;ä»ç¬¬ä¸€ä¸ªé0ä½æ˜¾ç¤º
         sub endaddr,si;;;
         push cx
         mov cx,endaddr

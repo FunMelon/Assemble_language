@@ -3,11 +3,11 @@
 data segment
     INPUT   db  "Please input a piece of string(< 80): ",'$'
     ITEMCH  db  "char",'$'
-    ITEMNUM db  "num",'$';ÌáÊ¾×Ö·û
+    ITEMNUM db  "num",'$';æç¤ºå­—ç¬¦
     BUFFER  db  80
-            db  ?;´æ´¢¾ä×Ó»º³åÇø
+            db  ?;å­˜å‚¨å¥å­ç¼“å†²åŒº
             db  80  dup(0)
-    STOCK   db  128 dup(0);Í³¼ÆÊý×é
+    STOCK   db  128 dup(0);ç»Ÿè®¡æ•°ç»„
     CRLF    db  0ah,'$'
 data ends
 
@@ -22,7 +22,7 @@ start:
         call printResult
         mov ax,4c00h
         int 21h
-readInput:;¶ÁÈ¡ÊäÈë
+readInput:;è¯»å–è¾“å…¥
         lea dx,INPUT      
         mov ah,09h          
         int 21h
@@ -31,31 +31,31 @@ readInput:;¶ÁÈ¡ÊäÈë
         int 21h
         ret
 
-stockChar:;´æ´¢×Ö·ûµ½¶ÔÓ¦ASCIIÂë±êºÅµÄÊý×éÈ¥
+stockChar:;å­˜å‚¨å­—ç¬¦åˆ°å¯¹åº”ASCIIç æ ‡å·çš„æ•°ç»„åŽ»
         mov bx,offset BUFFER+2
         mov si,offset STOCK+2
         mov cl,[bx-1]
-        mov ch,0;»ñÈ¡Ñ­»·´ÎÊý
+        mov ch,0;èŽ·å–å¾ªçŽ¯æ¬¡æ•°
 
 charNoEnd:      
-        mov al,[bx] ;»ñÈ¡bxµÄASCIIÂëµÄ´óÐ¡
+        mov al,[bx] ;èŽ·å–bxçš„ASCIIç çš„å¤§å°
         mov ah,0    
-        add si,ax   ;¾Ý´ËÕÒµ½¶ÔÓ¦µÄ´æ´¢µØÖ·
+        add si,ax   ;æ®æ­¤æ‰¾åˆ°å¯¹åº”çš„å­˜å‚¨åœ°å€
         mov al,[si]
-        add al,1    ;´æ´¢µÄÊýÄ¿¼ÓÒ»
+        add al,1    ;å­˜å‚¨çš„æ•°ç›®åŠ ä¸€
         mov [si],al
-        mov si,offset STOCK+2;»Øµ½Ä¬ÈÏ
+        mov si,offset STOCK+2;å›žåˆ°é»˜è®¤
         inc bx
         loop charNoEnd
         ret
 
-PRINTCRLF:;´òÓ¡»»ÐÐ
+PRINTCRLF:;æ‰“å°æ¢è¡Œ
         lea dx,CRLF
         mov ah,09h
         int 21h
         ret
 
-PRINTSPACE:;´òÓ¡¿Õ¸ñ
+PRINTSPACE:;æ‰“å°ç©ºæ ¼
         push cx
         mov cx,12
         mov dl,32
@@ -65,7 +65,7 @@ s:      int 21h
         pop cx
         ret
 
-printResult:;´òÓ¡½á¹û
+printResult:;æ‰“å°ç»“æžœ
         call PRINTSPACE
         lea dx,ITEMCH
         mov ah,09h
@@ -79,7 +79,7 @@ printResult:;´òÓ¡½á¹û
         mov si,0
         mov cx,124
 stockNoEnd:
-        mov al,[bx+si];»ñÈ¡´æ´¢µÄÊýÄ¿
+        mov al,[bx+si];èŽ·å–å­˜å‚¨çš„æ•°ç›®
         cmp al,0
         je  isZero
 
@@ -88,9 +88,9 @@ stockNoEnd:
         call PRINTSPACE
         mov dx,si
         mov ah,02h
-        int 21h;ÏÔÊ¾×Ö·û
+        int 21h;æ˜¾ç¤ºå­—ç¬¦
         call PRINTSPACE
-        mov dl,[bx+si];ÏÔÊ¾Êý×Ö
+        mov dl,[bx+si];æ˜¾ç¤ºæ•°å­—
         call printNuminDl
         call PRINTCRLF
 isZero:        
@@ -98,7 +98,7 @@ isZero:
         loop stockNoEnd
         ret
 
-printNuminDl:;ÒÔÊ®½øÖÆµÄÐÎÊ½
+printNuminDl:;ä»¥åè¿›åˆ¶çš„å½¢å¼
         push bx
         push ax
         push cx
@@ -109,10 +109,10 @@ printNuminDl:;ÒÔÊ®½øÖÆµÄÐÎÊ½
         mov cx,0
         mov dx,0
 noZero: div bx
-        push dx;dx´æÓà
+        push dx;dxå­˜ä½™
         inc cx
         cwd
-        cmp ax,0;ax´æÉÌ
+        cmp ax,0;axå­˜å•†
         jne noZero
 noEmpty:pop dx
         add dl,30h
