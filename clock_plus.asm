@@ -3,8 +3,8 @@
 ;数字计时器
 ;修改一：增加了七段数码管
 ;修改二：增加了闪烁，改进了缩进格式
+;修改三：增加了输出颜色，删除了清屏
 data        segment
-    CLEARSCREEN db 23 dup(0ah), '$'
     TIME    db  '00:00', 0dh, '$'
     INFOR   db  'Pless any key to start(except the blank)',0ah, '$'
     BOARD   db  33*9  dup(" "), 0ah, '$'
@@ -54,8 +54,6 @@ start:      ;加载数据区
 
             call    STOCKINASCII
             push    dx
-            lea     dx, CLEARSCREEN
-            call    PRINT
             ;打印画板
             call    PRINTBOARD
             lea     dx, TIME
@@ -209,6 +207,12 @@ PRINTBOARD:;打印画板
             inc     si
             cmp     bx, 24
             jbe     s1
+            ;设置打印颜色
+            push    ax
+            mov     ah, 00h
+            mov     al, 4
+            int     10h
+            pop     ax
 
             lea     dx, BOARD
             call    PRINT
