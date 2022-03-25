@@ -124,7 +124,7 @@ PROCESS:;对BCD码进行预处理，ah为数字低位，al为高位
             ret
 
 SUBSTOCK:;进行减法，bx和dx的低位和高位依次相减,完成后变为ascii码然后存储
-            ;先对比低位,如果bh比dh要小的话表明需要借位
+            ;先对比低位,如果bh比dh要小的话表明需要借位，ch为借位值
             add     dh, ch
             cmp     bh, dh
             jae     noCarry1
@@ -137,7 +137,7 @@ noCarry1:
             jae     noCarry2
             add     bl, 6
             ;改变标志寄存器
-            mov     cx, 0001h
+            mov     ch, 1
 noCarry2:   
             sub     bl, dl
             ;变为ascii码并存储
