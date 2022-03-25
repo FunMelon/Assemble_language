@@ -1,6 +1,8 @@
 ;@auther:Fun_Melon
 ;@2022/3/25
 ;数字计时器
+;修改一：增加了七段数码管
+;修改二：增加了闪烁，改进了缩进格式
 data        segment
     CLEARSCREEN db 23 dup(0ah), '$'
     TIME    db  '00:00', 0dh, '$'
@@ -31,7 +33,7 @@ start:      ;加载数据区
             lea     si, BOARD
             mov     cx, 8
             mov     bx, 33
-s0:         
+    s0:         
             mov     [si][bx], 0ah
             add     bx, 33
             loop    s0
@@ -47,7 +49,7 @@ s0:
             call    READTIME
             ;将开始时间读入到dx中，用以以后的减法
             mov     dx, bx
-s:;开始循环，不断的读取打印，直到输入空格停止
+    s:      ;开始循环，不断的读取打印，直到输入空格停止
             call    READTIME
 
             call    STOCKINASCII
@@ -70,7 +72,7 @@ s:;开始循环，不断的读取打印，直到输入空格停止
 
             call    DELAY
             jmp     s
-exit:       ;终止程序
+    exit:   ;终止程序
             mov     ax, 4c00h
             int     21h
 
@@ -155,7 +157,7 @@ SUBSTOCK:;进行减法，bx和dx的低位和高位依次相减,完成后变为as
             jae     noCarry1
             add     bh, 10
             add     dl, 1
-noCarry1:
+        noCarry1:
             sub     bh, dh
             ;比较高位
             cmp     bl, dl
@@ -163,7 +165,7 @@ noCarry1:
             add     bl, 6
             ;改变标志寄存器
             mov     cx, 0001h
-noCarry2:   
+        noCarry2:   
             sub     bl, dl
             ;变为ascii码并存储
             add     bx, 3030h
@@ -174,9 +176,9 @@ DELAY:;;延时函数
             push    cx
             push    bx
             mov     bx, 00025h
-cirOut:
+    cirOut:
             mov     cx, 0ffffh
-cirIn:
+    cirIn:
             loop    cirIn
             dec     bx
             cmp     bx, 0
@@ -190,14 +192,14 @@ PRINTBOARD:;打印画板
             lea     si, TIME
             ;bx来存储偏移量
             mov     bx, 0
-s1:         ;把存储的数字移入al
+    s1:         ;把存储的数字移入al
             mov     al, byte ptr [si]
             cmp     al, ':'
             jne     s2
             ;如果是冒号的话,直接扫描下一个
             inc     si
             jmp     s1
-s2:         ;绘画
+    s2:         ;绘画
             push    si
             call    DRAW
             pop     si
@@ -210,7 +212,8 @@ s2:         ;绘画
 
             lea     dx, BOARD
             call    PRINT
-
+            ;闪烁
+            call    FLICKER
             pop     bx
             ret
 
@@ -236,43 +239,43 @@ DRAW:;绘画画板，其中bx为列参数, al为数字
             cmp     al, '9'
             je      nine       
 
-zero:;ax为数组地址
+    zero:;ax为数组地址
             lea     di, LED0
             call    LIGHT
             ret
-one:
+    one:
             lea     di, LED1
             call    LIGHT
             ret
-two:
+    two:
             lea     di, LED2
             call    LIGHT
             ret
-three:
+    three:
             lea     di, LED3
             call    LIGHT
             ret
-four:
+    four:
             lea     di, LED4
             call    LIGHT
             ret
-five:
+    five:
             lea     di, LED5
             call    LIGHT
             ret
-six:
+    six:
             lea     di, LED6
             call    LIGHT
             ret
-seven:
+    seven:
             lea     di, LED7
             call    LIGHT
             ret
-eight:
+    eight:
             lea     di, LED8
             call    LIGHT
             ret
-nine:
+    nine:
             lea     di, LED9
             call    LIGHT
             ret
@@ -320,6 +323,19 @@ LIGHT:;cl为待打印字符,di为数组下标
             mov     byte ptr [si+33*8+3+bx],cl
             mov     byte ptr [si+33*8+4+bx],cl
             mov     byte ptr [si+33*8+5+bx],cl
+            ret
+
+FLICKER:;闪烁
+            lea     si, BOARD
+            mov     al, byte ptr [si+33*2+16]
+            cmp     al, '#'
+            je      cover
+            mov     byte ptr [si+33*2+16], '#'
+            mov     byte ptr [si+33*6+16], '#'
+            ret
+    cover:
+            mov     byte ptr [si+33*2+16], ' '
+            mov     byte ptr [si+33*6+16], ' '
             ret
 
 code        ends
