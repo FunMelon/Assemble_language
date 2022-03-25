@@ -207,11 +207,19 @@ PRINTBOARD:;打印画板
             inc     si
             cmp     bx, 24
             jbe     s1
-            ;设置打印颜色
+            ;显示模式320 x 200, 4色
             push    ax
-            mov     ah, 00h
-            mov     al, 4
+            push    bx
+            mov     ah, 0h
+            mov     al, 04h
             int     10h
+            ;设置文字色为绿色
+            mov     ah, 0bh
+            mov     bh, 01h
+            mov     bl, 4
+            int     10h
+
+            pop     bx
             pop     ax
 
             lea     dx, BOARD
